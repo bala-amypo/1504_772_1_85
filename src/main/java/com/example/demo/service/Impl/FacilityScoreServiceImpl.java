@@ -1,3 +1,12 @@
+package com.example.demo.service.impl;
+
+import com.example.demo.entity.FacilityScore;
+import com.example.demo.entity.Property;
+import com.example.demo.repository.FacilityScoreRepository;
+import com.example.demo.repository.PropertyRepository;
+import com.example.demo.service.FacilityScoreService;
+import org.springframework.stereotype.Service;
+
 @Service
 public class FacilityScoreServiceImpl implements FacilityScoreService {
 
@@ -16,7 +25,7 @@ public class FacilityScoreServiceImpl implements FacilityScoreService {
         Property property = propertyRepository.findById(propertyId)
                 .orElseThrow(() -> new RuntimeException("Property not found"));
 
-        // ensure one score per property
+        // Ensure one score per property
         facilityScoreRepository.findByPropertyId(propertyId)
                 .ifPresent(s -> {
                     throw new RuntimeException("Facility score already exists");

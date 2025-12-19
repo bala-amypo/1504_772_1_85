@@ -1,3 +1,12 @@
+package com.example.demo.service.impl;
+
+import com.example.demo.entity.Property;
+import com.example.demo.repository.PropertyRepository;
+import com.example.demo.service.PropertyService;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
 @Service
 public class PropertyServiceImpl implements PropertyService {
 

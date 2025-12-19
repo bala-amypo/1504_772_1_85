@@ -1,3 +1,15 @@
+package com.example.demo.service.impl;
+
+import com.example.demo.entity.FacilityScore;
+import com.example.demo.entity.Property;
+import com.example.demo.entity.RatingResult;
+import com.example.demo.repository.FacilityScoreRepository;
+import com.example.demo.repository.PropertyRepository;
+import com.example.demo.repository.RatingResultRepository;
+import com.example.demo.service.RatingLogService;
+import com.example.demo.service.RatingService;
+import org.springframework.stereotype.Service;
+
 @Service
 public class RatingServiceImpl implements RatingService {
 
