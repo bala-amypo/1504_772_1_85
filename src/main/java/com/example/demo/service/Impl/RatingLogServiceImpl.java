@@ -1,41 +1,36 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.Property;
-import com.example.demo.entity.RatingLog;
-import com.example.demo.repository.PropertyRepository;
-import com.example.demo.repository.RatingLogRepository;
+import com.example.demo.entity.*;
+import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.repository.*;
 import com.example.demo.service.RatingLogService;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
 public class RatingLogServiceImpl implements RatingLogService {
 
-    private final RatingLogRepository ratingLogRepository;
-    private final PropertyRepository propertyRepository;
+    private final RatingLogRepository repo;
+    private final PropertyRepository propertyRepo;
 
-    public RatingLogServiceImpl(RatingLogRepository ratingLogRepository,
-                                PropertyRepository propertyRepository) {
-        this.ratingLogRepository = ratingLogRepository;
-        this.propertyRepository = propertyRepository;
+    public RatingLogServiceImpl(RatingLogRepository repo,
+                                PropertyRepository propertyRepo) {
+        this.repo = repo;
+        this.propertyRepo = propertyRepo;
     }
 
     @Override
     public RatingLog addLog(Long propertyId, String message) {
+        Property property = propertyRepo.findById(propertyId)
+                .orElseThrow(() -> new ResourceNotFoundException("Property not found"));
 
-        Property property = propertyRepository.findById(propertyId)
-                .orElseThrow(() -> new RuntimeException("Property not found"));
-
-        RatingLog log = new RatingLog();
-        log.setProperty(property);
-        log.setMessage(message);
-
-        return ratingLogRepository.save(log);
+        return repo.save(new RatingLog(property, message, null));
     }
 
     @Override
     public List<RatingLog> getLogsByProperty(Long propertyId) {
-        return ratingLogRepository.findByPropertyId(propertyId);
+        Property property = propertyRepo.findById(propertyId)
+                .orElseThrow(() -> new ResourceNotFoundException("Property not found"));
+        return repo.findByProperty(property);
     }
 }
