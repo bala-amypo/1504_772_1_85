@@ -2,7 +2,6 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.*;
 import com.example.demo.entity.User;
-import com.example.demo.security.JwtTokenProvider;
 import com.example.demo.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.*;
@@ -14,7 +13,8 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
-    private final JwtTokenProvider tokenProvider;
+    String token = "dummy-token";
+
     private final UserService userService;
 
     public AuthController(AuthenticationManager authenticationManager,
