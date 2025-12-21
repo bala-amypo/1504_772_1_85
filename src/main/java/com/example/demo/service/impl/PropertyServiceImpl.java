@@ -10,17 +10,28 @@ import java.util.List;
 @Service
 public class PropertyServiceImpl implements PropertyService {
 
-    private final PropertyRepository repo;
+    private final PropertyRepository propertyRepository;
 
-    public PropertyServiceImpl(PropertyRepository repo) {
-        this.repo = repo;
+    public PropertyServiceImpl(PropertyRepository propertyRepository) {
+        this.propertyRepository = propertyRepository;
     }
 
-    public Property save(Property property) {
-        return repo.save(property);
+    @Override
+    public Property addProperty(Property property) {
+
+        if (property.getPrice() < 0) {
+            throw new IllegalArgumentException("Price must be >= 0");
+        }
+
+        if (property.getAreaSqFt() < 100) {
+            throw new IllegalArgumentException("Area must be at least 100 sq ft");
+        }
+
+        return propertyRepository.save(property);
     }
 
-    public List<Property> findAll() {
-        return repo.findAll();
+    @Override
+    public List<Property> getAllProperties() {
+        return propertyRepository.findAll();
     }
 }
