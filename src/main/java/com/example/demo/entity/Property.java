@@ -9,18 +9,16 @@ public class Property {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private double price;
-    private double areaSqFt;
+    private String name;
+    private String location;
+    private int rooms;
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
+    public String getName() { return name; }
+    public String getLocation() { return location; }
+    public int getRooms() { return rooms; }
 
-    public double getPrice() {
-        return price;
-    }
-
-    public double getAreaSqFt() {
-        return areaSqFt;
-    }
+    public void setName(String name) { this.name = name; }
+    public void setLocation(String location) { this.location = location; }
+    public void setRooms(int rooms) { this.rooms = rooms; }
 }
