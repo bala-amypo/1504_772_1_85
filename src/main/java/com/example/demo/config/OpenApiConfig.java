@@ -15,7 +15,7 @@ public class OpenApiConfig {
         return new OpenAPI()
                 .servers(List.of(
                         // Best practice behind proxy
-                        new Server().url("https://9323.408procr.amypo.ai/")
+                        new Server().url("https://9323.408procr.amypo.ai")
                 ));
     }
 }
