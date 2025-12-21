@@ -4,7 +4,8 @@ import com.example.demo.dto.*;
 import com.example.demo.entity.User;
 import com.example.demo.service.UserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.*;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,27 +14,21 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
-    String token = "dummy-token";
-
     private final UserService userService;
 
     public AuthController(AuthenticationManager authenticationManager,
-                          JwtTokenProvider tokenProvider,
                           UserService userService) {
         this.authenticationManager = authenticationManager;
-        this.tokenProvider = tokenProvider;
         this.userService = userService;
     }
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
 
-        User user = new User(
-                request.getName(),
-                request.getEmail(),
-                request.getPassword(),
-                request.getRole()
-        );
+        User user = new User();
+        user.setEmail(request.getEmail());
+        user.setPassword(request.getPassword());
+        user.setRole(request.getRole());
 
         User savedUser = userService.registerUser(user);
 
@@ -44,11 +39,15 @@ public class AuthController {
                 )
         );
 
-        String token = tokenProvider.generateToken(auth, savedUser);
+        String token = "dummy-token";
 
         return ResponseEntity.ok(
-                new AuthResponse(token, savedUser.getId(),
-                        savedUser.getEmail(), savedUser.getRole())
+                new AuthResponse(
+                        savedUser.getId(),
+                        savedUser.getEmail(),
+                        savedUser.getRole(),
+                        token
+                )
         );
     }
 
@@ -63,11 +62,15 @@ public class AuthController {
         );
 
         User user = userService.findByEmail(request.getEmail());
-        String token = tokenProvider.generateToken(auth, user);
+        String token = "dummy-token";
 
         return ResponseEntity.ok(
-                new AuthResponse(token, user.getId(),
-                        user.getEmail(), user.getRole())
+                new AuthResponse(
+                        user.getId(),
+                        user.getEmail(),
+                        user.getRole(),
+                        token
+                )
         );
     }
 }
