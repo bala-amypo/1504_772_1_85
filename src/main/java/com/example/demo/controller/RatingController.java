@@ -1,37 +1,29 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.ApiResponse;
 import com.example.demo.entity.RatingResult;
 import com.example.demo.service.RatingService;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/ratings")
-@Tag(name = "Ratings")
 public class RatingController {
 
-    private final RatingService ratingService;
+    private final RatingService service;
 
-    public RatingController(RatingService ratingService) {
-        this.ratingService = ratingService;
+    public RatingController(RatingService service) {
+        this.service = service;
     }
 
     @PostMapping("/generate/{propertyId}")
-    @Operation(summary = "Generate rating")
-    public RatingResult generateRating(@PathVariable Long propertyId) {
-        return ratingService.generateRating(propertyId);
+    public ApiResponse generateRating(@PathVariable Long propertyId) {
+        RatingResult result = service.generateRating(propertyId);
+        return new ApiResponse(true, "Rating generated", result);
     }
 
     @GetMapping("/property/{propertyId}")
-    @Operation(summary = "Get rating result")
-    public RatingResult getRating(@PathVariable Long propertyId) {
-        return ratingService.getRating(propertyId);
+    public ApiResponse getRating(@PathVariable Long propertyId) {
+        return new ApiResponse(true, "Rating fetched",
+                service.getRating(propertyId));
     }
 }

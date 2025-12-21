@@ -1,39 +1,30 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.ApiResponse;
 import com.example.demo.entity.FacilityScore;
 import com.example.demo.service.FacilityScoreService;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/scores")
-@Tag(name = "Facility Scores")
 public class FacilityScoreController {
 
-    private final FacilityScoreService facilityScoreService;
+    private final FacilityScoreService service;
 
-    public FacilityScoreController(FacilityScoreService facilityScoreService) {
-        this.facilityScoreService = facilityScoreService;
+    public FacilityScoreController(FacilityScoreService service) {
+        this.service = service;
     }
 
     @PostMapping("/{propertyId}")
-    @Operation(summary = "Submit facility score")
-    public FacilityScore addScore(@PathVariable Long propertyId,
-                                  @RequestBody FacilityScore score) {
-        return facilityScoreService.addScore(propertyId, score);
+    public ApiResponse addScore(@PathVariable Long propertyId,
+                                @RequestBody FacilityScore score) {
+        return new ApiResponse(true, "Score added",
+                service.addScore(propertyId, score));
     }
 
     @GetMapping("/{propertyId}")
-    @Operation(summary = "Get facility score by property")
-    public FacilityScore getScore(@PathVariable Long propertyId) {
-        return facilityScoreService.getScoreByProperty(propertyId);
+    public ApiResponse getScore(@PathVariable Long propertyId) {
+        return new ApiResponse(true, "Score fetched",
+                service.getScoreByProperty(propertyId));
     }
 }

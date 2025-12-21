@@ -1,48 +1,73 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.*;
 import com.example.demo.entity.User;
+import com.example.demo.security.JwtTokenProvider;
 import com.example.demo.service.UserService;
-import com.example.demo.util.JwtUtil;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.*;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
-@Tag(name = "Authentication")
 public class AuthController {
 
+    private final AuthenticationManager authenticationManager;
+    private final JwtTokenProvider tokenProvider;
     private final UserService userService;
-    private final JwtUtil jwtUtil;
-    private final PasswordEncoder passwordEncoder;
 
-    public AuthController(UserService userService,
-                          JwtUtil jwtUtil,
-                          PasswordEncoder passwordEncoder) {
+    public AuthController(AuthenticationManager authenticationManager,
+                          JwtTokenProvider tokenProvider,
+                          UserService userService) {
+        this.authenticationManager = authenticationManager;
+        this.tokenProvider = tokenProvider;
         this.userService = userService;
-        this.jwtUtil = jwtUtil;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping("/register")
-    @Operation(summary = "Register new user")
-    public User register(@RequestBody User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userService.register(user);
+    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
+
+        User user = new User(
+                request.getName(),
+                request.getEmail(),
+                request.getPassword(),
+                request.getRole()
+        );
+
+        User savedUser = userService.registerUser(user);
+
+        Authentication auth = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()
+                )
+        );
+
+        String token = tokenProvider.generateToken(auth, savedUser);
+
+        return ResponseEntity.ok(
+                new AuthResponse(token, savedUser.getId(),
+                        savedUser.getEmail(), savedUser.getRole())
+        );
     }
 
     @PostMapping("/login")
-    @Operation(summary = "Login user")
-    public String login(@RequestBody User user) {
-        User dbUser = userService.findByEmail(user.getEmail());
+    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
 
-        if (!passwordEncoder.matches(user.getPassword(), dbUser.getPassword())) {
-            throw new RuntimeException("Invalid credentials");
-        }
+        Authentication auth = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()
+                )
+        );
 
-        return jwtUtil.generateToken(dbUser.getId(), dbUser.getEmail(), dbUser.getRole());
+        User user = userService.findByEmail(request.getEmail());
+        String token = tokenProvider.generateToken(auth, user);
+
+        return ResponseEntity.ok(
+                new AuthResponse(token, user.getId(),
+                        user.getEmail(), user.getRole())
+        );
     }
 }
