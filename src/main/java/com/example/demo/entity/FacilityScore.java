@@ -1,42 +1,28 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 
 @Entity
-@Table(name = "facility_scores")
 public class FacilityScore {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "property_id", unique = true)
+    private int schoolProximity;
+    private int hospitalProximity;
+    private int transportAccess;
+    private int safetyScore;
+
+    @ManyToOne
     private Property property;
 
-    @Min(0) @Max(10)
-    private Integer schoolProximity;
+    public int getSchoolProximity() { return schoolProximity; }
+    public int getHospitalProximity() { return hospitalProximity; }
+    public int getTransportAccess() { return transportAccess; }
+    public int getSafetyScore() { return safetyScore; }
 
-    @Min(0) @Max(10)
-    private Integer hospitalProximity;
-
-    @Min(0) @Max(10)
-    private Integer transportAccess;
-
-    @Min(0) @Max(10)
-    private Integer safetyScore;
-
-    public FacilityScore() {}
-
-    public FacilityScore(Property property, Integer schoolProximity,
-                         Integer hospitalProximity, Integer transportAccess,
-                         Integer safetyScore) {
+    public void setProperty(Property property) {
         this.property = property;
-        this.schoolProximity = schoolProximity;
-        this.hospitalProximity = hospitalProximity;
-        this.transportAccess = transportAccess;
-        this.safetyScore = safetyScore;
     }
 }
