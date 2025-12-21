@@ -4,6 +4,7 @@ import com.example.demo.entity.Property;
 import com.example.demo.repository.PropertyRepository;
 import com.example.demo.service.PropertyService;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service
@@ -15,16 +16,11 @@ public class PropertyServiceImpl implements PropertyService {
         this.repo = repo;
     }
 
-    @Override
-    public Property addProperty(Property property) {
-        if (property.getPrice() < 0 || property.getAreaSqFt() < 100) {
-            throw new IllegalArgumentException("Invalid property data");
-        }
+    public Property save(Property property) {
         return repo.save(property);
     }
 
-    @Override
-    public List<Property> getAllProperties() {
+    public List<Property> findAll() {
         return repo.findAll();
     }
 }
