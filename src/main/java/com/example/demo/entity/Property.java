@@ -1,10 +1,11 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
 import java.util.List;
+import java.util.Set;
 
 @Entity
+@Table(name = "properties")
 public class Property {
 
     @Id
@@ -14,35 +15,26 @@ public class Property {
     private String title;
     private String address;
     private String city;
-
-    @Min(1)
     private Double price;
-
-    @Min(100)
     private Double areaSqFt;
 
-    @OneToMany(mappedBy = "property", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "property", cascade = CascadeType.ALL)
+    private RatingResult ratingResult;
+
+    @OneToMany(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RatingLog> ratingLogs;
 
-    // getters and setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    @ManyToMany(mappedBy = "assignedProperties")
+    private Set<User> assignedUsers;
 
-    public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
+    public Property() {}
 
-    public String getAddress() { return address; }
-    public void setAddress(String address) { this.address = address; }
-
-    public String getCity() { return city; }
-    public void setCity(String city) { this.city = city; }
-
-    public Double getPrice() { return price; }
-    public void setPrice(Double price) { this.price = price; }
-
-    public Double getAreaSqFt() { return areaSqFt; }
-    public void setAreaSqFt(Double areaSqFt) { this.areaSqFt = areaSqFt; }
-
-    public List<RatingLog> getRatingLogs() { return ratingLogs; }
-    public void setRatingLogs(List<RatingLog> ratingLogs) { this.ratingLogs = ratingLogs; }
+    public Property(String title, String address, String city,
+                    Double price, Double areaSqFt) {
+        this.title = title;
+        this.address = address;
+        this.city = city;
+        this.price = price;
+        this.areaSqFt = areaSqFt;
+    }
 }
