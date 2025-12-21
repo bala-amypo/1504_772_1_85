@@ -1,9 +1,8 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.FacilityScore;
 import com.example.demo.entity.Property;
-import com.example.demo.service.FacilityScoreService;
 import com.example.demo.service.PropertyService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,26 +12,18 @@ import java.util.List;
 public class PropertyController {
 
     private final PropertyService propertyService;
-    private final FacilityScoreService scoreService;
 
-    public PropertyController(PropertyService propertyService,
-                              FacilityScoreService scoreService) {
+    public PropertyController(PropertyService propertyService) {
         this.propertyService = propertyService;
-        this.scoreService = scoreService;
     }
 
     @PostMapping
-    public Property create(@RequestBody Property property) {
-        return propertyService.save(property);
+    public ResponseEntity<Property> addProperty(@RequestBody Property property) {
+        return ResponseEntity.ok(propertyService.addProperty(property));
     }
 
     @GetMapping
-    public List<Property> getAll() {
-        return propertyService.findAll();
-    }
-
-    @PostMapping("/{id}/score")
-    public FacilityScore calculateScore(@PathVariable Long id) {
-        return scoreService.calculateScore(id);
+    public ResponseEntity<List<Property>> getAllProperties() {
+        return ResponseEntity.ok(propertyService.getAllProperties());
     }
 }

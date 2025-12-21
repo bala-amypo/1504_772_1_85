@@ -1,25 +1,69 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "rating_results")
 public class RatingResult {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private double finalRating;
+    @OneToOne
+    @JoinColumn(name = "property_id", nullable = false, unique = true)
+    private Property property;
+
+    private Double finalRating;
+
     private String ratingCategory;
 
-    @ManyToOne
-    private Property property;
+    private LocalDateTime ratedAt;
+
+    public RatingResult() {
+    }
+
+    public RatingResult(Property property, Double finalRating,
+                        String ratingCategory, LocalDateTime ratedAt) {
+        this.property = property;
+        this.finalRating = finalRating;
+        this.ratingCategory = ratingCategory;
+        this.ratedAt = ratedAt;
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        this.ratedAt = LocalDateTime.now();
+    }
+
+    // ===== Getters & Setters =====
+
+    public Long getId() {
+        return id;
+    }
+
+    public Property getProperty() {
+        return property;
+    }
+
+    public Double getFinalRating() {
+        return finalRating;
+    }
+
+    public String getRatingCategory() {
+        return ratingCategory;
+    }
+
+    public LocalDateTime getRatedAt() {
+        return ratedAt;
+    }
 
     public void setProperty(Property property) {
         this.property = property;
     }
 
-    public void setFinalRating(double finalRating) {
+    public void setFinalRating(Double finalRating) {
         this.finalRating = finalRating;
     }
 
