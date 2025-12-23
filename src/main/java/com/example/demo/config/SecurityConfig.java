@@ -15,16 +15,10 @@ public class SecurityConfig {
 
         http
             .csrf(csrf -> csrf.disable())
-
-            // 🚫 NO AUTHENTICATION AT ALL
             .authorizeHttpRequests(auth -> auth
                 .anyRequest().permitAll()
             )
-
-            // 🚫 DISABLE BASIC AUTH (THIS CAUSES POPUP)
             .httpBasic(httpBasic -> httpBasic.disable())
-
-            // 🚫 DISABLE FORM LOGIN
             .formLogin(form -> form.disable());
 
         return http.build();
