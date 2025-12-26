@@ -10,30 +10,49 @@ public class Property {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Double price;
+    private String name;
 
-    private Double areaSqFt;
+    private String city;
 
-    // ✅ REQUIRED GETTERS & SETTERS
+    private Double price;        // ✅ REQUIRED
+    private Double areaSqFt;     // ✅ REQUIRED
+
+    // ===== GETTERS & SETTERS =====
 
     public Long getId() {
         return id;
-    }
-
-    public Double getPrice() {
-        return price;
-    }
-
-    public Double getAreaSqFt() {
-        return areaSqFt;
     }
 
     public void setId(Long id) {
         this.id = id;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
     public void setPrice(Double price) {
         this.price = price;
+    }
+
+    public Double getAreaSqFt() {
+        return areaSqFt;
     }
 
     public void setAreaSqFt(Double areaSqFt) {
