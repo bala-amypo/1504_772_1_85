@@ -7,7 +7,6 @@ import com.example.demo.repository.PropertyRepository;
 import com.example.demo.repository.RatingLogRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.RatingLogService;
-
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -24,21 +23,16 @@ public class RatingLogServiceImpl implements RatingLogService {
             RatingLogRepository ratingLogRepository,
             PropertyRepository propertyRepository,
             UserRepository userRepository) {
-
         this.ratingLogRepository = ratingLogRepository;
         this.propertyRepository = propertyRepository;
         this.userRepository = userRepository;
     }
 
-    // ⭐ MUST MATCH INTERFACE EXACTLY
     @Override
     public RatingLog addLog(Long propertyId, Long userId, Long dummyRatingId, Integer score) {
 
-        Property property = propertyRepository.findById(propertyId)
-                .orElseThrow(() -> new RuntimeException("Property not found"));
-
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        Property property = propertyRepository.findById(propertyId).orElseThrow();
+        User user = userRepository.findById(userId).orElseThrow();
 
         RatingLog log = new RatingLog();
         log.setProperty(property);
