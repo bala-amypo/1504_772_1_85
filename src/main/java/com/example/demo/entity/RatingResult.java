@@ -1,37 +1,51 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "rating_results")
 public class RatingResult {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Double score;
+    private double finalRating;
+
+    private String ratingCategory;
+
+    private LocalDateTime ratedAt;
 
     @ManyToOne
-    @JoinColumn(name = "property_id")
     private Property property;
 
-    // ✅ REQUIRED: No-arg constructor
-    public RatingResult() {
+    // ✅ REQUIRED BY TEST
+    public double getFinalRating() {
+        return finalRating;
     }
 
-    // ✅ GETTERS & SETTERS (VERY IMPORTANT)
-
-    public Long getId() {
-        return id;
+    // ✅ REQUIRED BY TEST
+    public void setFinalRating(double finalRating) {
+        this.finalRating = finalRating;
     }
 
-    public Double getScore() {
-        return score;
+    // ✅ REQUIRED BY TEST
+    public String getRatingCategory() {
+        return ratingCategory;
     }
 
-    public void setScore(Double score) {
-        this.score = score;
+    // ✅ REQUIRED BY TEST
+    public void setRatingCategory(String ratingCategory) {
+        this.ratingCategory = ratingCategory;
+    }
+
+    // ✅ REQUIRED BY TEST
+    public LocalDateTime getRatedAt() {
+        return ratedAt;
+    }
+
+    public void setRatedAt(LocalDateTime ratedAt) {
+        this.ratedAt = ratedAt;
     }
 
     public Property getProperty() {

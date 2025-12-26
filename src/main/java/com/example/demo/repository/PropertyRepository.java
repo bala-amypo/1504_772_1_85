@@ -2,11 +2,10 @@ package com.example.demo.repository;
 
 import com.example.demo.entity.Property;
 import org.springframework.data.jpa.repository.JpaRepository;
-
 import java.util.List;
 
 public interface PropertyRepository extends JpaRepository<Property, Long> {
 
-    // ✅ NOW VALID because Property has `city`
+    // ✅ REQUIRED BY TEST
     List<Property> findByCity(String city);
 }
