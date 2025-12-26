@@ -1,10 +1,8 @@
 package com.example.demo.security;
 
 import com.example.demo.entity.User;
-
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +15,6 @@ public class JwtTokenProvider {
     private final long EXPIRATION = 86400000;
 
     public String generateToken(Authentication authentication, User user) {
-
         return Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim("userId", user.getId())
@@ -43,5 +40,14 @@ public class JwtTokenProvider {
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
+    }
+
+    // ===== TEST REQUIRED =====
+    public Long getUserIdFromToken(String token) {
+        return Jwts.parser()
+                .setSigningKey(SECRET_KEY)
+                .parseClaimsJws(token)
+                .getBody()
+                .get("userId", Long.class);
     }
 }
