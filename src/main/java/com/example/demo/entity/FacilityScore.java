@@ -45,7 +45,7 @@ public class FacilityScore {
         this.safetyScore = safetyScore;
     }
 
-    // ===== Getters & Setters =====
+    // ===== GETTERS & SETTERS (TEST REQUIRED) =====
 
     public Long getId() {
         return id;
@@ -53,10 +53,6 @@ public class FacilityScore {
 
     public Property getProperty() {
         return property;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public void setProperty(Property property) {
@@ -67,15 +63,31 @@ public class FacilityScore {
         return schoolProximity;
     }
 
+    public void setSchoolProximity(Integer schoolProximity) {
+        this.schoolProximity = schoolProximity;
+    }
+
     public Integer getHospitalProximity() {
         return hospitalProximity;
+    }
+
+    public void setHospitalProximity(Integer hospitalProximity) {
+        this.hospitalProximity = hospitalProximity;
     }
 
     public Integer getTransportAccess() {
         return transportAccess;
     }
 
+    public void setTransportAccess(Integer transportAccess) {
+        this.transportAccess = transportAccess;
+    }
+
     public Integer getSafetyScore() {
         return safetyScore;
+    }
+
+    public void setSafetyScore(Integer safetyScore) {
+        this.safetyScore = safetyScore;
     }
 }
