@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 public class RatingLog {
@@ -9,34 +10,55 @@ public class RatingLog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String message;
-
     @ManyToOne
     private Property property;
 
-    // ===== GETTERS & SETTERS =====
+    @ManyToOne
+    private User user;
 
+    private Integer rating;
+
+    private LocalDateTime loggedAt;
+
+    // ===== GETTERS =====
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
     }
 
     public Property getProperty() {
         return property;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public Integer getRating() {
+        return rating;
+    }
+
+    public LocalDateTime getLoggedAt() {
+        return loggedAt;
+    }
+
+    // ===== SETTERS (THIS FIXES YOUR ERROR) =====
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public void setProperty(Property property) {
         this.property = property;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setRating(Integer rating) {
+        this.rating = rating;
+    }
+
+    public void setLoggedAt(LocalDateTime loggedAt) {
+        this.loggedAt = loggedAt;
     }
 }
