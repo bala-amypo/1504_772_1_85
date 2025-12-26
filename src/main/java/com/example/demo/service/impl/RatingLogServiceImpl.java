@@ -3,9 +3,10 @@ package com.example.demo.service.impl;
 import com.example.demo.entity.Property;
 import com.example.demo.entity.RatingLog;
 import com.example.demo.entity.User;
+import com.example.demo.repository.PropertyRepository;
 import com.example.demo.repository.RatingLogRepository;
+import com.example.demo.repository.UserRepository;
 import com.example.demo.service.RatingLogService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,35 +19,25 @@ public class RatingLogServiceImpl implements RatingLogService {
     @Autowired
     private RatingLogRepository ratingLogRepository;
 
-    @Override
-    public RatingLog addLog(Long propertyId, String message) {
-        Property property = new Property();
-        property.setId(propertyId);
+    @Autowired
+    private PropertyRepository propertyRepository;
 
-        RatingLog log = new RatingLog();
-        log.setProperty(property);
-        log.setMessage(message);
-        log.setLoggedAt(LocalDateTime.now());
-
-        return ratingLogRepository.save(log);
-    }
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
-    public RatingLog addLog(Property property, String message) {
-        RatingLog log = new RatingLog();
-        log.setProperty(property);
-        log.setMessage(message);
-        log.setLoggedAt(LocalDateTime.now());
+    public RatingLog addLog(Long propertyId, Long userId, Integer rating) {
 
-        return ratingLogRepository.save(log);
-    }
+        Property property = propertyRepository.findById(propertyId)
+                .orElseThrow(() -> new RuntimeException("Property not found"));
 
-    @Override
-    public RatingLog addLog(Property property, User user, String message) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
         RatingLog log = new RatingLog();
         log.setProperty(property);
         log.setUser(user);
-        log.setMessage(message);
+        log.setRating(rating);
         log.setLoggedAt(LocalDateTime.now());
 
         return ratingLogRepository.save(log);
@@ -54,6 +45,10 @@ public class RatingLogServiceImpl implements RatingLogService {
 
     @Override
     public List<RatingLog> getLogsByProperty(Long propertyId) {
-        return ratingLogRepository.findByPropertyId(propertyId);
+
+        Property property = propertyRepository.findById(propertyId)
+                .orElseThrow(() -> new RuntimeException("Property not found"));
+
+        return ratingLogRepository.findByProperty(property);
     }
 }
