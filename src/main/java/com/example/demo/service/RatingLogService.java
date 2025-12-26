@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface RatingLogService {
 
-    RatingLog addLog(Long propertyId, Long userId, Integer rating);
+    RatingLog addLog(Long propertyId, Long userId, Long ratingId, Integer score);
 
     List<RatingLog> getLogsByProperty(Long propertyId);
 }
