@@ -7,7 +7,7 @@ import com.example.demo.repository.RatingResultRepository;
 import com.example.demo.service.RatingService;
 import org.springframework.stereotype.Service;
 
-@Service   // ✅ THIS WAS MISSING
+@Service
 public class RatingServiceImpl implements RatingService {
 
     private final PropertyRepository propertyRepository;
@@ -29,7 +29,7 @@ public class RatingServiceImpl implements RatingService {
 
         RatingResult result = new RatingResult();
         result.setProperty(property);
-        result.setFinalScore(score);
+        result.setScore(score);   // ✅ THIS IS THE FIX
 
         return ratingResultRepository.save(result);
     }
