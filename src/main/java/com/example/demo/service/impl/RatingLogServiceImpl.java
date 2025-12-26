@@ -1,16 +1,13 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.Property;
-import com.example.demo.entity.Rating;
 import com.example.demo.entity.RatingLog;
 import com.example.demo.entity.User;
 import com.example.demo.repository.PropertyRepository;
 import com.example.demo.repository.RatingLogRepository;
-import com.example.demo.repository.RatingRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.RatingLogService;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -19,29 +16,32 @@ import java.util.List;
 @Service
 public class RatingLogServiceImpl implements RatingLogService {
 
-    @Autowired
-    private RatingLogRepository ratingLogRepository;
+    private final RatingLogRepository ratingLogRepository;
+    private final PropertyRepository propertyRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private PropertyRepository propertyRepository;
+    public RatingLogServiceImpl(
+            RatingLogRepository ratingLogRepository,
+            PropertyRepository propertyRepository,
+            UserRepository userRepository) {
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private RatingRepository ratingRepository;
+        this.ratingLogRepository = ratingLogRepository;
+        this.propertyRepository = propertyRepository;
+        this.userRepository = userRepository;
+    }
 
     @Override
-    public RatingLog addLog(Long propertyId, Long userId, Long ratingId, Integer score) {
+    public RatingLog addLog(Long propertyId, Long userId, Integer score) {
 
-        Property property = propertyRepository.findById(propertyId).orElseThrow();
-        User user = userRepository.findById(userId).orElseThrow();
-        Rating rating = ratingRepository.findById(ratingId).orElseThrow();
+        Property property = propertyRepository.findById(propertyId)
+                .orElseThrow(() -> new RuntimeException("Property not found"));
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
         RatingLog log = new RatingLog();
         log.setProperty(property);
         log.setUser(user);
-        log.setRating(rating);
         log.setScore(score);
         log.setLoggedAt(LocalDateTime.now());
 

@@ -5,7 +5,8 @@ import java.util.List;
 
 public interface RatingLogService {
 
-    RatingLog addLog(Long propertyId, Long userId, Long ratingId, Integer score);
+    // ⭐ EXACT SIGNATURE EXPECTED BY COMPILER
+    RatingLog addLog(Long propertyId, Long userId, Long dummyRatingId, Integer score);
 
     List<RatingLog> getLogsByProperty(Long propertyId);
 }
