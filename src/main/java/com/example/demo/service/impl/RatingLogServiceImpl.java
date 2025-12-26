@@ -1,11 +1,7 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.Property;
-import com.example.demo.entity.RatingLog;
-import com.example.demo.entity.User;
-import com.example.demo.repository.PropertyRepository;
-import com.example.demo.repository.RatingLogRepository;
-import com.example.demo.repository.UserRepository;
+import com.example.demo.entity.*;
+import com.example.demo.repository.*;
 import com.example.demo.service.RatingLogService;
 import org.springframework.stereotype.Service;
 
@@ -19,17 +15,16 @@ public class RatingLogServiceImpl implements RatingLogService {
     private final PropertyRepository propertyRepository;
     private final UserRepository userRepository;
 
-    public RatingLogServiceImpl(
-            RatingLogRepository ratingLogRepository,
-            PropertyRepository propertyRepository,
-            UserRepository userRepository) {
+    public RatingLogServiceImpl(RatingLogRepository ratingLogRepository,
+                                PropertyRepository propertyRepository,
+                                UserRepository userRepository) {
         this.ratingLogRepository = ratingLogRepository;
         this.propertyRepository = propertyRepository;
         this.userRepository = userRepository;
     }
 
     @Override
-    public RatingLog addLog(Long propertyId, Long userId, Long dummyRatingId, Integer score) {
+    public void addLog(Long propertyId, Long userId, Integer score) {
 
         Property property = propertyRepository.findById(propertyId).orElseThrow();
         User user = userRepository.findById(userId).orElseThrow();
@@ -40,7 +35,7 @@ public class RatingLogServiceImpl implements RatingLogService {
         log.setScore(score);
         log.setLoggedAt(LocalDateTime.now());
 
-        return ratingLogRepository.save(log);
+        ratingLogRepository.save(log);
     }
 
     @Override

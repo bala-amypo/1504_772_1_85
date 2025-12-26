@@ -29,7 +29,7 @@ public class RatingServiceImpl implements RatingService {
 
         RatingResult result = new RatingResult();
         result.setProperty(property);
-        result.setScore(score);   // ✅ THIS IS THE FIX
+        result.setScore(score);
 
         return ratingResultRepository.save(result);
     }
