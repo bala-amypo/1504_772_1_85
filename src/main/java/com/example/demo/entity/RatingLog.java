@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "rating_logs")
 public class RatingLog {
 
     @Id
@@ -11,17 +12,56 @@ public class RatingLog {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "property_id")
     private Property property;
 
     @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
-
-    @ManyToOne
-    private Rating rating;
 
     private Integer score;
 
     private LocalDateTime loggedAt;
 
-    // getters and setters
+    // ===== GETTERS =====
+    public Long getId() {
+        return id;
+    }
+
+    public Property getProperty() {
+        return property;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public Integer getScore() {
+        return score;
+    }
+
+    public LocalDateTime getLoggedAt() {
+        return loggedAt;
+    }
+
+    // ===== SETTERS =====
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setProperty(Property property) {
+        this.property = property;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setScore(Integer score) {
+        this.score = score;
+    }
+
+    public void setLoggedAt(LocalDateTime loggedAt) {
+        this.loggedAt = loggedAt;
+    }
 }
