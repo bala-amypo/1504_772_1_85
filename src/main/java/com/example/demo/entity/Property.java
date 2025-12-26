@@ -10,16 +10,31 @@ public class Property {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String title;
+    private String address;
+    private String city;
+
     private Double price;
     private Double areaSqFt;
-    private String city;
 
     @ElementCollection
     private List<String> assignedUsers;
 
-    // 🔹 REQUIRED getters for tests
+    // 🔹 GETTERS
     public Long getId() {
         return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public String getCity() {
+        return city;
     }
 
     public Double getPrice() {
@@ -30,17 +45,25 @@ public class Property {
         return areaSqFt;
     }
 
-    public String getCity() {
-        return city;
-    }
-
     public List<String> getAssignedUsers() {
         return assignedUsers;
     }
 
-    // 🔹 setters
+    // 🔹 SETTERS (TESTS REQUIRE THESE)
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 
     public void setPrice(Double price) {
@@ -49,10 +72,6 @@ public class Property {
 
     public void setAreaSqFt(Double areaSqFt) {
         this.areaSqFt = areaSqFt;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
     }
 
     public void setAssignedUsers(List<String> assignedUsers) {
