@@ -1,32 +1,42 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
+@Table(name = "property")
 public class Property {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String city;
+    private Double price;
 
-    @OneToMany(mappedBy = "property", cascade = CascadeType.ALL)
-    private List<RatingLog> ratingLogs = new ArrayList<>();
+    private Double areaSqFt;
 
-    // ✅ REQUIRED BY TEST
-    public void addRatingLog(RatingLog log) {
-        log.setProperty(this);
-        this.ratingLogs.add(log);
+    // ✅ REQUIRED GETTERS & SETTERS
+
+    public Long getId() {
+        return id;
     }
 
-    public String getCity() {
-        return city;
+    public Double getPrice() {
+        return price;
     }
 
-    public void setCity(String city) {
-        this.city = city;
+    public Double getAreaSqFt() {
+        return areaSqFt;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public void setAreaSqFt(Double areaSqFt) {
+        this.areaSqFt = areaSqFt;
     }
 }
