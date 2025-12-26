@@ -14,23 +14,15 @@ public class RatingLog {
 
     private String message;
 
-    // ✅ REQUIRED: Default constructor
     public RatingLog() {
     }
 
-    // ✅ REQUIRED: Constructor used by tests
-    public RatingLog(Property property) {
-        this.property = property;
-    }
-
-    // ✅ REQUIRED: Constructor used by tests
     public RatingLog(Property property, String message) {
         this.property = property;
         this.message = message;
     }
 
-    // ===== Getters & Setters =====
-
+    // getters & setters
     public Long getId() {
         return id;
     }
