@@ -1,82 +1,61 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "properties")
-public class Property {
+@Table(name = "rating_logs")
+public class RatingLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String title;
-    private String address;
-    private String city;
-    private Double price;
-    private Double areaSqFt;
+    @ManyToOne
+    @JoinColumn(name = "property_id", nullable = false)
+    private Property property;
 
-    @OneToOne(mappedBy = "property", cascade = CascadeType.ALL)
-    private RatingResult ratingResult;
+    private String message;
 
-    @OneToMany(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<RatingLog> ratingLogs;
+    private LocalDateTime loggedAt;
 
-    @ManyToMany
-    @JoinTable(
-            name = "user_property",
-            joinColumns = @JoinColumn(name = "property_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
-    private Set<User> assignedUsers = new HashSet<>();
-
-    public Property() {
+    public RatingLog() {
     }
 
-    public Property(String title, String address, String city,
-                    Double price, Double areaSqFt) {
-        this.title = title;
-        this.address = address;
-        this.city = city;
-        this.price = price;
-        this.areaSqFt = areaSqFt;
+    public RatingLog(Property property, String message) {
+        this.property = property;
+        this.message = message;
+        this.loggedAt = LocalDateTime.now();
     }
 
-    // ===== GETTERS & SETTERS (TEST REQUIRED) =====
+    @PrePersist
+    public void onCreate() {
+        this.loggedAt = LocalDateTime.now();
+    }
+
+    // ===== GETTERS & SETTERS =====
 
     public Long getId() {
         return id;
     }
 
-    public String getTitle() {
-        return title;
+    public Property getProperty() {
+        return property;
     }
 
-    public String getAddress() {
-        return address;
+    public void setProperty(Property property) {
+        this.property = property;
     }
 
-    public String getCity() {
-        return city;
+    public String getMessage() {
+        return message;
     }
 
-    public Double getPrice() {
-        return price;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
-    public Double getAreaSqFt() {
-        return areaSqFt;
-    }
-
-    public Set<User> getAssignedUsers() {
-        return assignedUsers;
-    }
-
-    public void setAssignedUsers(Set<User> assignedUsers) {
-        this.assignedUsers = assignedUsers;
+    public LocalDateTime getLoggedAt() {
+        return loggedAt;
     }
 }
