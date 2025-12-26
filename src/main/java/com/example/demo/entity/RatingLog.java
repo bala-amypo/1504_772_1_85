@@ -17,9 +17,8 @@ public class RatingLog {
 
     private LocalDateTime loggedAt;
 
-    public RatingLog() {
-        this.loggedAt = LocalDateTime.now();
-    }
+    // 🔹 REQUIRED constructors
+    public RatingLog() {}
 
     public RatingLog(Property property, String message) {
         this.property = property;
@@ -27,14 +26,20 @@ public class RatingLog {
         this.loggedAt = LocalDateTime.now();
     }
 
-    /* ===== REQUIRED BY TEST ===== */
-    public LocalDateTime getLoggedAt() {
-        return loggedAt;
+    // 🔹 REQUIRED getters
+    public Long getId() {
+        return id;
     }
 
-    /* ===== getters & setters ===== */
+    public Property getProperty() {
+        return property;
+    }
 
-    public void setProperty(Property property) {
-        this.property = property;
+    public String getMessage() {
+        return message;
+    }
+
+    public LocalDateTime getLoggedAt() {
+        return loggedAt;
     }
 }

@@ -1,7 +1,6 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -11,32 +10,52 @@ public class Property {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
-
-    /* ================= REQUIRED BY TEST ================= */
-
-    @OneToMany(mappedBy = "property", cascade = CascadeType.ALL)
-    private List<RatingLog> ratingLogs = new ArrayList<>();
+    private Double price;
+    private Double areaSqFt;
+    private String city;
 
     @ElementCollection
-    private List<String> assignedUsers = new ArrayList<>();
+    private List<String> assignedUsers;
 
-    public void addRatingLog(RatingLog log) {
-        ratingLogs.add(log);
-        log.setProperty(this);
+    // 🔹 REQUIRED getters for tests
+    public Long getId() {
+        return id;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public Double getAreaSqFt() {
+        return areaSqFt;
+    }
+
+    public String getCity() {
+        return city;
     }
 
     public List<String> getAssignedUsers() {
         return assignedUsers;
     }
 
-    /* ================= getters & setters ================= */
-
-    public Long getId() {
-        return id;
+    // 🔹 setters
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public List<RatingLog> getRatingLogs() {
-        return ratingLogs;
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public void setAreaSqFt(Double areaSqFt) {
+        this.areaSqFt = areaSqFt;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public void setAssignedUsers(List<String> assignedUsers) {
+        this.assignedUsers = assignedUsers;
     }
 }
