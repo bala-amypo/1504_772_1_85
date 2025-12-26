@@ -14,5 +14,5 @@ public interface RatingLogService {
 
     RatingLog addLog(Property property, User user, String message);
 
-    List<RatingLog> findByPropertyId(Long propertyId);
+    List<RatingLog> getLogsByProperty(Long propertyId);
 }
