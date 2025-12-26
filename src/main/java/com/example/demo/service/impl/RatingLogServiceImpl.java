@@ -30,8 +30,9 @@ public class RatingLogServiceImpl implements RatingLogService {
         this.userRepository = userRepository;
     }
 
+    // ⭐ MUST MATCH INTERFACE EXACTLY
     @Override
-    public RatingLog addLog(Long propertyId, Long userId, Integer score) {
+    public RatingLog addLog(Long propertyId, Long userId, Long dummyRatingId, Integer score) {
 
         Property property = propertyRepository.findById(propertyId)
                 .orElseThrow(() -> new RuntimeException("Property not found"));
