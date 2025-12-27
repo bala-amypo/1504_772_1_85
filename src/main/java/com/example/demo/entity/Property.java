@@ -2,14 +2,10 @@ package com.example.demo.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
-import lombok.*;
 import java.util.*;
 
 @Entity
 @Table(name = "properties")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class Property {
 
     @Id
@@ -35,8 +31,26 @@ public class Property {
     @ManyToMany(mappedBy = "assignedProperties")
     private Set<User> assignedUsers = new HashSet<>();
 
+    public Property() {}
+
     public void addRatingLog(RatingLog log) {
         ratingLogs.add(log);
         log.setProperty(this);
     }
+
+    // GETTERS & SETTERS
+    public Long getId() { return id; }
+    public String getTitle() { return title; }
+    public String getAddress() { return address; }
+    public String getCity() { return city; }
+    public Double getPrice() { return price; }
+    public Double getAreaSqFt() { return areaSqFt; }
+    public Set<User> getAssignedUsers() { return assignedUsers; }
+
+    public void setId(Long id) { this.id = id; }
+    public void setTitle(String title) { this.title = title; }
+    public void setAddress(String address) { this.address = address; }
+    public void setCity(String city) { this.city = city; }
+    public void setPrice(Double price) { this.price = price; }
+    public void setAreaSqFt(Double areaSqFt) { this.areaSqFt = areaSqFt; }
 }

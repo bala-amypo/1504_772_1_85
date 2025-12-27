@@ -3,13 +3,9 @@ package com.example.demo.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import lombok.*;
 
 @Entity
 @Table(name = "facility_scores", uniqueConstraints = @UniqueConstraint(columnNames = "property_id"))
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class FacilityScore {
 
     @Id
@@ -31,4 +27,19 @@ public class FacilityScore {
 
     @Min(0) @Max(10)
     private Integer safetyScore;
+
+    public FacilityScore() {}
+
+    public Long getId() { return id; }
+    public Property getProperty() { return property; }
+    public Integer getSchoolProximity() { return schoolProximity; }
+    public Integer getHospitalProximity() { return hospitalProximity; }
+    public Integer getTransportAccess() { return transportAccess; }
+    public Integer getSafetyScore() { return safetyScore; }
+
+    public void setProperty(Property property) { this.property = property; }
+    public void setSchoolProximity(Integer schoolProximity) { this.schoolProximity = schoolProximity; }
+    public void setHospitalProximity(Integer hospitalProximity) { this.hospitalProximity = hospitalProximity; }
+    public void setTransportAccess(Integer transportAccess) { this.transportAccess = transportAccess; }
+    public void setSafetyScore(Integer safetyScore) { this.safetyScore = safetyScore; }
 }
