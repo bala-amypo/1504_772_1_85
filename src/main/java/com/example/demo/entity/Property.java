@@ -1,12 +1,15 @@
-// Property.java
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
+import lombok.*;
 import java.util.*;
 
 @Entity
 @Table(name = "properties")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Property {
 
     @Id
@@ -32,20 +35,8 @@ public class Property {
     @ManyToMany(mappedBy = "assignedProperties")
     private Set<User> assignedUsers = new HashSet<>();
 
-    public Property() {}
-
-    public Property(String title, String address, String city, Double price, Double areaSqFt) {
-        this.title = title;
-        this.address = address;
-        this.city = city;
-        this.price = price;
-        this.areaSqFt = areaSqFt;
-    }
-
     public void addRatingLog(RatingLog log) {
         ratingLogs.add(log);
         log.setProperty(this);
     }
-
-    // getters and setters
 }

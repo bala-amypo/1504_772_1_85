@@ -1,15 +1,15 @@
-// FacilityScore.java
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import lombok.*;
 
 @Entity
-@Table(
-    name = "facility_scores",
-    uniqueConstraints = @UniqueConstraint(columnNames = "property_id")
-)
+@Table(name = "facility_scores", uniqueConstraints = @UniqueConstraint(columnNames = "property_id"))
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class FacilityScore {
 
     @Id
@@ -31,18 +31,4 @@ public class FacilityScore {
 
     @Min(0) @Max(10)
     private Integer safetyScore;
-
-    public FacilityScore() {}
-
-    public FacilityScore(Property property, Integer schoolProximity,
-                         Integer hospitalProximity, Integer transportAccess,
-                         Integer safetyScore) {
-        this.property = property;
-        this.schoolProximity = schoolProximity;
-        this.hospitalProximity = hospitalProximity;
-        this.transportAccess = transportAccess;
-        this.safetyScore = safetyScore;
-    }
-
-    // getters and setters
 }

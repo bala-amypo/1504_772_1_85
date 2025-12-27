@@ -1,11 +1,14 @@
-// RatingResult.java
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "rating_results")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class RatingResult {
 
     @Id
@@ -21,20 +24,8 @@ public class RatingResult {
 
     private LocalDateTime ratedAt;
 
-    public RatingResult() {}
-
-    public RatingResult(Property property, Double finalRating,
-                        String ratingCategory, LocalDateTime ratedAt) {
-        this.property = property;
-        this.finalRating = finalRating;
-        this.ratingCategory = ratingCategory;
-        this.ratedAt = ratedAt;
-    }
-
     @PrePersist
-    public void onCreate() {
-        this.ratedAt = LocalDateTime.now();
+    void onCreate() {
+        ratedAt = LocalDateTime.now();
     }
-
-    // getters and setters
 }

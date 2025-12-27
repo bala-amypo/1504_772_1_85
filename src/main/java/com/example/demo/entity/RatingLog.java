@@ -1,11 +1,14 @@
-// RatingLog.java
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "rating_logs")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class RatingLog {
 
     @Id
@@ -20,18 +23,8 @@ public class RatingLog {
 
     private LocalDateTime loggedAt;
 
-    public RatingLog() {}
-
-    public RatingLog(Property property, String message, LocalDateTime loggedAt) {
-        this.property = property;
-        this.message = message;
-        this.loggedAt = loggedAt;
-    }
-
     @PrePersist
-    public void onCreate() {
-        this.loggedAt = LocalDateTime.now();
+    void onCreate() {
+        loggedAt = LocalDateTime.now();
     }
-
-    // getters and setters
 }
