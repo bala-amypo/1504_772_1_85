@@ -1,7 +1,9 @@
+// PropertyController.java
 package com.example.demo.controller;
 
 import com.example.demo.entity.Property;
 import com.example.demo.service.PropertyService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,11 +21,12 @@ public class PropertyController {
 
     @PostMapping
     public ResponseEntity<Property> addProperty(@RequestBody Property property) {
-        return ResponseEntity.ok(propertyService.addProperty(property));
+        Property saved = propertyService.addProperty(property);
+        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
     @GetMapping
-    public ResponseEntity<List<Property>> getAllProperties() {
+    public ResponseEntity<List<Property>> getAll() {
         return ResponseEntity.ok(propertyService.getAllProperties());
     }
 }

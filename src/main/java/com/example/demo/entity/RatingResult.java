@@ -1,6 +1,8 @@
+// RatingResult.java
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "rating_results")
@@ -10,34 +12,29 @@ public class RatingResult {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Double score;
-
-    @ManyToOne
+    @OneToOne
+    @JoinColumn(name = "property_id", nullable = false)
     private Property property;
 
-    // ✅ REQUIRED GETTERS & SETTERS
+    private Double finalRating;
+    private String ratingCategory;
 
-    public Long getId() {
-        return id;
-    }
+    private LocalDateTime ratedAt;
 
-    public Double getScore() {
-        return score;
-    }
+    public RatingResult() {}
 
-    public Property getProperty() {
-        return property;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setScore(Double score) {
-        this.score = score;
-    }
-
-    public void setProperty(Property property) {
+    public RatingResult(Property property, Double finalRating,
+                        String ratingCategory, LocalDateTime ratedAt) {
         this.property = property;
+        this.finalRating = finalRating;
+        this.ratingCategory = ratingCategory;
+        this.ratedAt = ratedAt;
     }
+
+    @PrePersist
+    public void onCreate() {
+        this.ratedAt = LocalDateTime.now();
+    }
+
+    // getters and setters
 }

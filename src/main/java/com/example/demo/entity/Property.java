@@ -1,11 +1,12 @@
+// Property.java
 package com.example.demo.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import java.util.*;
 
 @Entity
+@Table(name = "properties")
 public class Property {
 
     @Id
@@ -14,48 +15,37 @@ public class Property {
 
     private String title;
     private String address;
-    private double price;
-    private double areaSqFt;
+    private String city;
 
-    // ----- Getters & Setters -----
+    @Min(0)
+    private Double price;
 
-    public Long getId() {
-        return id;
-    }
+    @Min(100)
+    private Double areaSqFt;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    @OneToOne(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true)
+    private RatingResult ratingResult;
 
-    public String getTitle() {
-        return title;
-    }
+    @OneToMany(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RatingLog> ratingLogs = new ArrayList<>();
 
-    public void setTitle(String title) {
+    @ManyToMany(mappedBy = "assignedProperties")
+    private Set<User> assignedUsers = new HashSet<>();
+
+    public Property() {}
+
+    public Property(String title, String address, String city, Double price, Double areaSqFt) {
         this.title = title;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
         this.address = address;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
+        this.city = city;
         this.price = price;
-    }
-
-    public double getAreaSqFt() {
-        return areaSqFt;
-    }
-
-    public void setAreaSqFt(double areaSqFt) {
         this.areaSqFt = areaSqFt;
     }
+
+    public void addRatingLog(RatingLog log) {
+        ratingLogs.add(log);
+        log.setProperty(this);
+    }
+
+    // getters and setters
 }
