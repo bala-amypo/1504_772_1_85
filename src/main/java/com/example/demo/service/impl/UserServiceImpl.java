@@ -1,5 +1,7 @@
+// UserServiceImpl.java
 package com.example.demo.service.impl;
 
+import com.example.demo.dto.RegisterRequest;
 import com.example.demo.entity.User;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.UserRepository;
@@ -20,17 +22,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User registerUser(User user) {
+    public User registerUser(RegisterRequest request) {
 
-        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new IllegalArgumentException("Email already exists");
         }
 
-        if (user.getRole() == null) {
-            user.setRole("ANALYST");
-        }
+        String role = request.getRole() == null ? "ANALYST" : request.getRole();
 
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        User user = new User(
+                request.getName(),
+                request.getEmail(),
+                passwordEncoder.encode(request.getPassword()),
+                role
+        );
+
         return userRepository.save(user);
     }
 
