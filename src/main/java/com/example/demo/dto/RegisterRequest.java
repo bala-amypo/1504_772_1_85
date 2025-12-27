@@ -1,3 +1,4 @@
+// RegisterRequest.java
 package com.example.demo.dto;
 
 public class RegisterRequest {
@@ -5,10 +6,9 @@ public class RegisterRequest {
     private String name;
     private String email;
     private String password;
-    private String role;
+    private String role; // optional
 
-    public RegisterRequest() {
-    }
+    public RegisterRequest() {}
 
     public String getName() {
         return name;

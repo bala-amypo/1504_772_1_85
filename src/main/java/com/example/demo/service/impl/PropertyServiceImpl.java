@@ -1,6 +1,8 @@
+// PropertyServiceImpl.java
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.Property;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.PropertyRepository;
 import com.example.demo.service.PropertyService;
 import org.springframework.stereotype.Service;
@@ -24,7 +26,7 @@ public class PropertyServiceImpl implements PropertyService {
         }
 
         if (property.getAreaSqFt() < 100) {
-            throw new IllegalArgumentException("Area must be at least 100 sq ft");
+            throw new IllegalArgumentException("Area must be >= 100 sq ft");
         }
 
         return propertyRepository.save(property);
