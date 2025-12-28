@@ -1,34 +1,32 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "rating_logs")
 public class RatingLog {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "property_id", nullable = false)
-    private Property property;
+    @ManyToOne
+    private Property property;
 
-    private String message;
-    private LocalDateTime loggedAt;
+    private String message;
 
-    public RatingLog() {}
+    @CreationTimestamp
+    private LocalDateTime loggedAt;
 
-    @PrePersist
-    void onCreate() {
-        loggedAt = LocalDateTime.now();
-    }
+    // getters & setters
+    public Long getId() { return id; }
 
-    public Long getId() { return id; }
-    public Property getProperty() { return property; }
-    public String getMessage() { return message; }
+    public Property getProperty() { return property; }
+    public void setProperty(Property property) { this.property = property; }
 
-    public void setProperty(Property property) { this.property = property; }
-    public void setMessage(String message) { this.message = message; }
+    public String getMessage() { return message; }
+    public void setMessage(String message) { this.message = message; }
+
+    public LocalDateTime getLoggedAt() { return loggedAt; }
 }
