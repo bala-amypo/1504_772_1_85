@@ -43,4 +43,4 @@ public class FacilityScoreServiceImpl implements FacilityScoreService {
         return scoreRepo.findByProperty(property)
                 .orElseThrow(() -> new IllegalArgumentException("Score not found"));
     }
-} 
+}
