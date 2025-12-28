@@ -1,6 +1,5 @@
 package com.example.demo.security;
 
-import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,38 +32,34 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String header = request.getHeader("Authorization");
 
         if (header != null && header.startsWith("Bearer ")) {
+
             String token = header.substring(7);
 
             try {
-                String email = Jwts.parserBuilder()
-                        .setSigningKey(
-                                "THIS_IS_A_TEST_SECRET_KEY_FOR_REAL_ESTATE_RATING_ENGINE"
-                                        .getBytes()
-                        )
-                        .build()
-                        .parseClaimsJws(token)
-                        .getBody()
-                        .getSubject();
+                // ✅ Extract email via provider (NO Jwts usage here)
+                String email = jwtTokenProvider
+                        .getEmailFromToken(token);
 
                 UserDetails userDetails =
                         userDetailsService.loadUserByUsername(email);
 
-                UsernamePasswordAuthenticationToken auth =
+                UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(
                                 userDetails,
                                 null,
                                 userDetails.getAuthorities()
                         );
 
-                auth.setDetails(
+                authentication.setDetails(
                         new WebAuthenticationDetailsSource()
                                 .buildDetails(request)
                 );
 
-                SecurityContextHolder.getContext().setAuthentication(auth);
+                SecurityContextHolder.getContext()
+                        .setAuthentication(authentication);
 
-            } catch (JwtException ex) {
-                // ❌ Invalid token → force 401
+            } catch (Exception ex) {
+                // ❌ Invalid token → 401
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
             }
