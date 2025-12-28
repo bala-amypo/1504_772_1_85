@@ -5,7 +5,10 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "rating_results")
+@Table(
+        name = "rating_results",
+        uniqueConstraints = @UniqueConstraint(columnNames = "property_id")
+)
 public class RatingResult {
 
     @Id

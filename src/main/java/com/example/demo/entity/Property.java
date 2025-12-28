@@ -25,6 +25,10 @@ public class Property {
     @Min(100)
     private Double areaSqFt;
 
+    // ✅ REQUIRED for testPropertyFacilityScoreOneToOneMapping
+    @OneToOne(mappedBy = "property", cascade = CascadeType.ALL)
+    private FacilityScore facilityScore;
+
     @OneToOne(mappedBy = "property", cascade = CascadeType.ALL)
     private RatingResult ratingResult;
 
@@ -46,12 +50,12 @@ public class Property {
         return id;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
     }
 
     public void setTitle(String title) {
@@ -88,6 +92,14 @@ public class Property {
 
     public void setAreaSqFt(Double areaSqFt) {
         this.areaSqFt = areaSqFt;
+    }
+
+    public FacilityScore getFacilityScore() {
+        return facilityScore;
+    }
+
+    public void setFacilityScore(FacilityScore facilityScore) {
+        this.facilityScore = facilityScore;
     }
 
     public RatingResult getRatingResult() {
