@@ -1,48 +1,32 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.Property;
-import com.example.demo.service.PropertyService;
-import jakarta.validation.Valid;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import com.example.demo.repository.PropertyRepository;
+import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/properties")
 public class PropertyController {
 
-    private final PropertyService propertyService;
+    private final PropertyRepository propertyRepository;
 
-    public PropertyController(PropertyService propertyService) {
-        this.propertyService = propertyService;
-    }
+    public PropertyController(PropertyRepository propertyRepository) {
+        this.propertyRepository = propertyRepository;
+    }
 
-    // ---------------- CREATE PROPERTY ----------------
-    // Used by tests (ADMIN only)
-    @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Property> addProperty(
-            @Valid @RequestBody Property property) {
+    @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Property> create(@RequestBody Property property) {
+        Property saved = propertyRepository.save(property);
+        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+    }
 
-        Property saved = propertyService.addProperty(property);
-        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
-    }
-
-    // ---------------- LIST PROPERTIES ----------------
-    @GetMapping
-    public Page<Property> listProperties(
-            Pageable pageable,
-            @RequestParam(required = false) String city) {
-
-        return propertyService.listProperties(pageable, city);
-    }
-
-    // ---------------- GET PROPERTY BY ID ----------------
-    @GetMapping("/{id}")
-    public Property getProperty(@PathVariable Long id) {
-        return propertyService.getProperty(id);
-    }
+    @GetMapping
+    public ResponseEntity<List<Property>> list() {
+        return ResponseEntity.ok(propertyRepository.findAll());
+    }
 }

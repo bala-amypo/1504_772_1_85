@@ -8,63 +8,58 @@ import org.springframework.stereotype.Service;
 @Service
 public class RatingServiceImpl implements RatingService {
 
-    private final PropertyRepository propertyRepo;
-    private final FacilityScoreRepository scoreRepo;
-    private final RatingResultRepository ratingRepo;
-    private final RatingLogRepository logRepo;
+    private final PropertyRepository propertyRepository;
+    private final FacilityScoreRepository facilityScoreRepository;
+    private final RatingResultRepository ratingResultRepository;
 
-    public RatingServiceImpl(PropertyRepository propertyRepo,
-                             FacilityScoreRepository scoreRepo,
-                             RatingResultRepository ratingRepo,
-                             RatingLogRepository logRepo) {
-        this.propertyRepo = propertyRepo;
-        this.scoreRepo = scoreRepo;
-        this.ratingRepo = ratingRepo;
-        this.logRepo = logRepo;
-    }
+    public RatingServiceImpl(PropertyRepository propertyRepository,
+                             FacilityScoreRepository facilityScoreRepository,
+                             RatingResultRepository ratingResultRepository) {
+        this.propertyRepository = propertyRepository;
+        this.facilityScoreRepository = facilityScoreRepository;
+        this.ratingResultRepository = ratingResultRepository;
+    }
 
-    @Override
-    public RatingResult generateRating(Long propertyId) {
+    @Override
+    public RatingResult generateRating(Long propertyId) {
 
-        Property property = propertyRepo.findById(propertyId)
-                .orElseThrow(() -> new IllegalArgumentException("Property not found"));
+        Property property = propertyRepository.findById(propertyId)
+                .orElseThrow();
 
-        FacilityScore fs = scoreRepo.findByProperty(property)
-                .orElseThrow(() -> new IllegalArgumentException("Facility score missing"));
+        FacilityScore fs = facilityScoreRepository.findByProperty(property)
+                .orElseThrow();
 
-        double avg = (fs.getSchoolProximity()
-                    + fs.getHospitalProximity()
-                    + fs.getTransportAccess()
-                    + fs.getSafetyScore()) / 4.0;
+        double avg = (
+                fs.getSchoolProximity()
+                        + fs.getHospitalProximity()
+                        + fs.getTransportAccess()
+                        + fs.getSafetyScore()
+        ) / 4.0;
 
-        RatingResult result = new RatingResult();
-        result.setProperty(property);
-        result.setFinalRating(avg);
-        result.setRatingCategory(resolveCategory(avg));
+        RatingResult result = new RatingResult();
+        result.setProperty(property);
+        result.setFinalRating(avg);
 
-        RatingResult saved = ratingRepo.save(result);
+        if (avg >= 8) {
+            result.setRatingCategory("EXCELLENT");
+        } else if (avg >= 6) {
+            result.setRatingCategory("GOOD");
+        } else if (avg >= 4) {
+            result.setRatingCategory("AVERAGE");
+        } else {
+            result.setRatingCategory("POOR");
+        }
 
-        RatingLog log = new RatingLog();
-        log.setProperty(property);
-        log.setMessage("Rating generated: " + avg);
-        logRepo.save(log);
+        return ratingResultRepository.save(result);
+    }
 
-        return saved;
-    }
+    @Override
+    public RatingResult getRatingByProperty(Long propertyId) {
 
-    @Override
-    public RatingResult getRating(Long propertyId) {
+        Property property = propertyRepository.findById(propertyId)
+                .orElseThrow();
 
-        Property property = propertyRepo.findById(propertyId)
-                .orElseThrow(() -> new IllegalArgumentException("Property not found"));
-
-        return ratingRepo.findByProperty(property)
-                .orElseThrow(() -> new IllegalArgumentException("Rating not found"));
-    }
-
-    private String resolveCategory(double rating) {
-        if (rating >= 8) return "EXCELLENT";
-        if (rating >= 5) return "GOOD";
-        return "POOR";
-    }
+        return ratingResultRepository.findByProperty(property)
+                .orElseThrow();
+    }
 }

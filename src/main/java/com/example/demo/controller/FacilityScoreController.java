@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.FacilityScore;
-import com.example.demo.service.FacilityScoreService;
+import com.example.demo.entity.*;
+import com.example.demo.repository.*;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,23 +9,40 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/scores")
 public class FacilityScoreController {
 
-    private final FacilityScoreService service;
+    private final PropertyRepository propertyRepository;
+    private final FacilityScoreRepository facilityScoreRepository;
 
-    public FacilityScoreController(FacilityScoreService service) {
-        this.service = service;
-    }
+    public FacilityScoreController(PropertyRepository propertyRepository,
+                                   FacilityScoreRepository facilityScoreRepository) {
+        this.propertyRepository = propertyRepository;
+        this.facilityScoreRepository = facilityScoreRepository;
+    }
 
-    @PostMapping("/{propertyId}")
-    public ResponseEntity<FacilityScore> create(
-            @PathVariable Long propertyId,
-            @RequestBody FacilityScore score) {
+    @PostMapping("/{propertyId}")
+    public ResponseEntity<?> create(@PathVariable Long propertyId,
+                                    @RequestBody FacilityScore score) {
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(service.createScore(propertyId, score));
-    }
+        Property property = propertyRepository.findById(propertyId)
+                .orElseThrow();
 
-    @GetMapping("/{propertyId}")
-    public FacilityScore get(@PathVariable Long propertyId) {
-        return service.getScore(propertyId);
-    }
+        if (facilityScoreRepository.findByProperty(property).isPresent()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        score.setProperty(property);
+        FacilityScore saved = facilityScoreRepository.save(score);
+        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+    }
+
+    @GetMapping("/{propertyId}")
+    public ResponseEntity<FacilityScore> get(@PathVariable Long propertyId) {
+
+        Property property = propertyRepository.findById(propertyId)
+                .orElseThrow();
+
+        FacilityScore score = facilityScoreRepository.findByProperty(property)
+                .orElseThrow();
+
+        return ResponseEntity.ok(score);
+    }
 }
