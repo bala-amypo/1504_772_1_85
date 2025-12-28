@@ -1,16 +1,19 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.Property;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import com.example.demo.repository.PropertyRepository;
+import org.springframework.stereotype.Service;
 
-public interface PropertyService {
+@Service
+public class PropertyService {
 
-    // REQUIRED BY TEST
-    Property addProperty(Property property);
+    private final PropertyRepository propertyRepository;
 
-    // used by controller
-    Page<Property> listProperties(Pageable pageable, String city);
+    public PropertyService(PropertyRepository propertyRepository) {
+        this.propertyRepository = propertyRepository;
+    }
 
-    Property getProperty(Long id);
+    public Property addProperty(Property property) {
+        return propertyRepository.save(property);
+    }
 }
