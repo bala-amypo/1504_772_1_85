@@ -3,6 +3,7 @@ package com.example.demo.service.impl;
 import com.example.demo.entity.*;
 import com.example.demo.repository.*;
 import com.example.demo.service.RatingService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,10 +25,18 @@ public class RatingServiceImpl implements RatingService {
     public RatingResult generateRating(Long propertyId) {
 
         Property property = propertyRepository.findById(propertyId)
-                .orElseThrow();
+                .orElseThrow(() ->
+                        new EntityNotFoundException("Property not found"));
 
         FacilityScore fs = facilityScoreRepository.findByProperty(property)
-                .orElseThrow();
+                .orElseThrow(() ->
+                        new EntityNotFoundException("Facility score not found"));
+
+        // ✅ Prevent duplicate rating
+        ratingResultRepository.findByProperty(property)
+                .ifPresent(r -> {
+                    throw new IllegalArgumentException("Rating already exists");
+                });
 
         double avg = (
                 fs.getSchoolProximity()
@@ -57,9 +66,11 @@ public class RatingServiceImpl implements RatingService {
     public RatingResult getRatingByProperty(Long propertyId) {
 
         Property property = propertyRepository.findById(propertyId)
-                .orElseThrow();
+                .orElseThrow(() ->
+                        new EntityNotFoundException("Property not found"));
 
         return ratingResultRepository.findByProperty(property)
-                .orElseThrow();
+                .orElseThrow(() ->
+                        new EntityNotFoundException("Rating not found"));
     }
 }
