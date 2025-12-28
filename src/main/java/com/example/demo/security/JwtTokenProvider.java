@@ -1,72 +1,81 @@
 package com.example.demo.security;
 
 import com.example.demo.entity.User;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
-import java.nio.charset.StandardCharsets;
+import java.security.Key;
 import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
 
-    // 🔐 MUST be at least 32 chars (HS256 requirement)
-    private static final String SECRET =
-            "THIS_IS_A_TEST_SECRET_KEY_FOR_REAL_ESTATE_RATING_ENGINE";
+    // 🔑 SECRET KEY (minimum 256 bits for HS256)
+    private final Key key =
+            Keys.hmacShaKeyFor(
+                    "my-secret-key-for-jwt-token-generation-which-is-very-secure"
+                            .getBytes()
+            );
 
-    /**
-     * Generate JWT token
-     * Used in AuthController + Testcases
-     */
+    private static final long EXPIRATION_TIME = 60 * 60 * 1000; // 1 hour
+
+    // ============================
+    // GENERATE TOKEN
+    // ============================
     public String generateToken(Authentication authentication, User user) {
 
         return Jwts.builder()
-                .setSubject(user.getEmail())          // email
-                .claim("userId", user.getId())        // required by testcase
-                .claim("role", user.getRole())        // ADMIN / ANALYST
+                .setSubject(user.getEmail())
+                .claim("userId", user.getId())
+                .claim("role", user.getRole())
                 .setIssuedAt(new Date())
-                .signWith(
-                        Keys.hmacShaKeyFor(
-                                SECRET.getBytes(StandardCharsets.UTF_8)
-                        )
-                )
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    /**
-     * Extract userId from JWT
-     * REQUIRED by testcase:
-     * jwtTokenProvider.getUserIdFromToken(token)
-     */
-    public Long getUserIdFromToken(String token) {
-
-        Object id = Jwts.parserBuilder()
-                .setSigningKey(
-                        SECRET.getBytes(StandardCharsets.UTF_8)
-                )
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .get("userId");
-
-        return ((Number) id).longValue();
+    // ============================
+    // VALIDATE TOKEN  ✅ (MISSING METHOD)
+    // ============================
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token);
+            return true;
+        } catch (Exception ex) {
+            return false;
+        }
     }
 
-    /**
-     * Extract email (subject) from JWT
-     * Used by JwtAuthenticationFilter
-     */
+    // ============================
+    // EXTRACT EMAIL
+    // ============================
     public String getEmailFromToken(String token) {
-
-        return Jwts.parserBuilder()
-                .setSigningKey(
-                        SECRET.getBytes(StandardCharsets.UTF_8)
-                )
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+                .getBody();
+
+        return claims.getSubject();
+    }
+
+    // ============================
+    // EXTRACT USER ID
+    // ============================
+    public Long getUserIdFromToken(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        return claims.get("userId", Long.class);
     }
 }
