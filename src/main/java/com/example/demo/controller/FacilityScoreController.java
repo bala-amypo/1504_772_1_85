@@ -1,8 +1,13 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.*;
-import com.example.demo.repository.*;
-import org.springframework.http.*;
+import com.example.demo.entity.FacilityScore;
+import com.example.demo.entity.Property;
+import com.example.demo.repository.FacilityScoreRepository;
+import com.example.demo.repository.PropertyRepository;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,10 +25,11 @@ public class FacilityScoreController {
 
     @PostMapping("/{propertyId}")
     public ResponseEntity<?> create(@PathVariable Long propertyId,
-                                    @RequestBody FacilityScore score) {
+                                    @Valid @RequestBody FacilityScore score) {
 
         Property property = propertyRepository.findById(propertyId)
-                .orElseThrow();
+                .orElseThrow(() ->
+                        new EntityNotFoundException("Property not found"));
 
         if (facilityScoreRepository.findByProperty(property).isPresent()) {
             return ResponseEntity.badRequest().build();
@@ -38,10 +44,12 @@ public class FacilityScoreController {
     public ResponseEntity<FacilityScore> get(@PathVariable Long propertyId) {
 
         Property property = propertyRepository.findById(propertyId)
-                .orElseThrow();
+                .orElseThrow(() ->
+                        new EntityNotFoundException("Property not found"));
 
         FacilityScore score = facilityScoreRepository.findByProperty(property)
-                .orElseThrow();
+                .orElseThrow(() ->
+                        new EntityNotFoundException("Facility score not found"));
 
         return ResponseEntity.ok(score);
     }
