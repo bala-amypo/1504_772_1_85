@@ -1,18 +1,3 @@
-package com.example.demo.controller;
-
-import com.example.demo.dto.LoginRequest;
-import com.example.demo.dto.RegisterRequest;
-import com.example.demo.entity.User;
-import com.example.demo.repository.UserRepository;
-import com.example.demo.security.JwtTokenProvider;
-import org.springframework.http.*;
-import org.springframework.security.authentication.*;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
-
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -33,13 +18,23 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Map<String, String>> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+
+        // 🔴 Handle duplicate email (VERY IMPORTANT)
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body("Email already exists");
+        }
 
         User user = new User();
-        user.setName(request.getName());
+        user.setName(request.getName() != null ? request.getName() : "User");
         user.setEmail(request.getEmail());
-        user.setRole(request.getRole());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole(
+                request.getRole() != null ? request.getRole() : "USER"
+        );
+
         userRepository.save(user);
 
         Authentication auth = authenticationManager.authenticate(
@@ -50,12 +45,17 @@ public class AuthController {
         );
 
         String token = jwtTokenProvider.generateToken(auth, user);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(Map.of("token", token));
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(Map.of(
+                        "message", "User registered successfully",
+                        "token", token
+                ));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
 
         Authentication auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -65,9 +65,17 @@ public class AuthController {
         );
 
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow();
+                .orElseThrow(() ->
+                        new BadCredentialsException("Invalid credentials")
+                );
 
         String token = jwtTokenProvider.generateToken(auth, user);
-        return ResponseEntity.ok(Map.of("token", token));
+
+        return ResponseEntity.ok(
+                Map.of(
+                        "message", "Login successful",
+                        "token", token
+                )
+        );
     }
 }
